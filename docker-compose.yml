@@ -1,0 +1,90 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - ./nextcloud/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD="<password>"
+    env_file:
+      - db.env
+    networks:
+      - nextcloud
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+     - nextcloud
+
+  app:
+    image: nextcloud:fpm-alpine
+    restart: always
+    volumes:
+      - ./nextcloud/html:/var/www/html
+    environment:
+      - MYSQL_HOST=db
+      - REDIS_HOST=redis
+    env_file:
+      - db.env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - nextcloud
+
+  cron:
+    image: nextcloud:fpm-alpine
+    restart: always
+    volumes:
+      - ./nextcloud/html:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
+    networks:
+      - nextcloud
+
+  web:
+    build: ./web
+    restart: always
+    volumes:
+      - ./nextcloud/html:/var/www/html:ro
+    environment:
+      - VIRTUAL_HOST=cloud.r-kara.de
+      - LETSENCRYPT_HOST=cloud.r-kara.de
+      - LETSENCRYPT_EMAIL=mail.r-kara.de
+    depends_on:
+      - app
+    networks:
+      - proxy
+      - nextcloud
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud-app.entrypoints=http"
+      - "traefik.http.routers.nextcloud-app.rule=Host(`<domain>`)"
+      - "traefik.http.middlewares.nextcloud-app-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.nextcloud-app.middlewares=nextcloud-app-https-redirect"
+      - "traefik.http.routers.nextcloud-app-secure.entrypoints=https"
+      - "traefik.http.routers.nextcloud-app-secure.rule=Host(`<domain>`)"
+      - "traefik.http.routers.nextcloud-app-secure.tls=true"
+      - "traefik.http.routers.nextcloud-app-secure.tls.certresolver=http"
+      - "traefik.http.routers.nextcloud-app-secure.service=nextcloud-app"
+      - "traefik.http.services.nextcloud-app.loadbalancer.server.port=80"
+      - "traefik.docker.network=proxy"
+#      - "traefik.http.routers.nextcloud-app-secure.middlewares=nextcloud-dav,secHeaders@file"
+      - "traefik.http.middlewares.nextcloud-dav.replacepathregex.regex=^/.well-known/ca(l|rd)dav"
+      - "traefik.http.middlewares.nextcloud-dav.replacepathregex.replacement=/remote.php/dav/"
+
+
+volumes:
+   certs:
+   vhost.d:
+
+networks:
+  proxy:
+    external: true
+  nextcloud:
