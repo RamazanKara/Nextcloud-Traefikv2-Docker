@@ -37,7 +37,7 @@ go to ```nextcloud/app/config/config.php ```
 
 and enter 
 
-```'trusted_proxies' => 'Subnet/Prefix'```, e.g. '172.17.0.2/16'
+```'trusted_proxies' => 'Subnet/Prefix'```, e.g. ```'172.17.0.2/16'```
 
 also change ```overwrite.cli.url``` to your URL:
 
