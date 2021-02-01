@@ -1,4 +1,4 @@
-# Nextcloud-Traefikv2-Docker-Compose
+# Nextcloud-Traefikv2-Docker-Compose-Public-Secure
 Docker-Compose Scripts for securely running Nextcloud on Public with Traefikv2 and Docker (Compose)
 
 
