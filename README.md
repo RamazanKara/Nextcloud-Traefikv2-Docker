@@ -31,12 +31,17 @@ The Settings net you an A+ Rating if you use a host prefix and not deploy it on 
 docker inspect proxy
 ```
 
-get the subnet where traefik and nextcloud is from there (IPAddress and IPPrefixLen)
+get the subnet where traefik and nextcloud is from there ```(IPAddress and IPPrefixLen=```
 
-go to nextcloud/app/config/config.php 
+go to ```nextcloud/app/config/config.php ```
 
-and enter ```'trusted_proxies' => 'Subnet/Prefix'```, e.g. '172.17.0.2/16'
-also change ```overwrite.cli.url to your URL -> 'overwrite.cli.url' => 'https://<yourdomain>',```
+and enter 
+
+```'trusted_proxies' => 'Subnet/Prefix'```, e.g. '172.17.0.2/16'
+
+also change ```overwrite.cli.url``` to your URL:
+
+```'overwrite.cli.url' => 'https://<yourdomain>',```
 and finally add these 2 entries with your domain:
 ```
   'overwriteprotocol' => 'https',
