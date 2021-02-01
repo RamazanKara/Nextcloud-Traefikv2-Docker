@@ -31,7 +31,7 @@ The Settings net you an A+ Rating if you use a host prefix and not deploy it on 
 docker inspect proxy
 ```
 
-get the subnet where traefik and nextcloud is from there ```(IPAddress and IPPrefixLen=```
+get the Docker subnet where traefik and nextcloud is deployed to ```(IPAddress and IPPrefixLen)```
 
 go to ```nextcloud/app/config/config.php ```
 
