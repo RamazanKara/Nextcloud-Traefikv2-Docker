@@ -48,7 +48,7 @@ and finally add these 2 entries with your domain:
   'overwritehost' => '<yourdomain>',
 ```  
 
-## Do I need to thing about something else to keep my Next Cloud Safe?
+## Do I need to thing about something else to keep my Nextcloud Safe?
 
 - If you have a static IP you will get lots of scans and passwort tries. Implement TOTP Authenticator or Yubi Key (Apps are on Nextcloud Repo)
 - Use fail2ban (I will make a separate Repo for that) and ban these fools for messing with your stuff
