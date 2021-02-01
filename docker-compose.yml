@@ -78,23 +78,22 @@ services:
       
 ## Enabling DAV connection for the super slow DAV of Nextcloud Fork.       
    
-      - "traefik.http.routers.nextcloud-app-secure.middlewares=nextcloud-dav"
+      - "traefik.http.routers.nextcloud-app-secure.middlewares=nextcloud-dav, nextcloud-sniff"
       - "traefik.http.middlewares.nextcloud-dav.replacepathregex.regex=^/.well-known/ca(l|rd)dav"
       - "traefik.http.middlewares.nextcloud-dav.replacepathregex.replacement=/remote.php/dav/"
 
 ## removing these nasty sniffers sniffing around. Also Secure Header.
       
-      - "traefik.http.middlewares.nextcloud-app-secure.headers.stsSeconds=155520011"
-      - "traefik.http.middlewares.nextcloud-app-secure.headers.stsIncludeSubdomains=true"
-      - "traefik.http.middlewares.nextcloud-app-secure.headers.stsPreload=true"
-      - "traefik.http.middlewares.nextcloud-app-secure.headers.contentTypeNosniff=true"
-      - "traefik.http.middlewares.nextcloud-app-secure.headers.browserXSSFilter=true"
-      - "traefik.http.middlewares.nextcloud-app.headers.stsSeconds=155520011"
-      - "traefik.http.middlewares.nextcloud-app.headers.stsIncludeSubdomains=true"
-      - "traefik.http.middlewares.nextcloud-app.headers.stsPreload=true"
-      - "traefik.http.middlewares.nextcloud-app.headers.contentTypeNosniff=true"
-      - "traefik.http.middlewares.nextcloud-app.headers.browserXSSFilter=true"
+      - "traefik.http.middlewares.nextcloud-sniff.headers.stsSeconds=155520011"
+      - "traefik.http.middlewares.nextcloud-sniff.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.nextcloud-sniff.headers.stsPreload=true"
+      - "traefik.http.middlewares.nextcloud-sniff.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.nextcloud-sniff.headers.browserXSSFilter=true"
 
+## Prevent mitm Attacks 
+
+      - "traefik.http.middlewares.nextcloud-sniff.headers.customFrameOptionsValue=SAMEORIGIN"
+      - "traefik.http.middlewares.nextcloud-sniff.headers.contentSecurityPolicy=frame-ancestors 'self' <domain>"
 
 volumes:
    certs:
